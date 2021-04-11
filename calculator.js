@@ -35,7 +35,7 @@ function keyboardHandler(event) {
     calculator.isEqualTouched = false
     insertToDisplay(text)
   } else if (type === 'operation') {
-    operationHandler(event.target.dataset.operation)
+    operationHandler(operation)
   }
 }
 
