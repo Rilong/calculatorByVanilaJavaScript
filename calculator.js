@@ -189,4 +189,8 @@ function highlightOperationOff() {
   $operations.forEach($op => $op.classList.remove('active'))
 }
 
-$keyboard.addEventListener('click', keyboardHandler)
+function calculatorInit() {
+  $keyboard.addEventListener('click', keyboardHandler)
+}
+
+calculatorInit()
