@@ -52,7 +52,7 @@ function insertToDisplay(text) {
 }
 
 function currentAppend(text) {
-  if ((calculator.current === '0' && text !== '.') || calculator.hasError) {
+  if (((calculator.current === '0' || calculator.current === '-0') && text !== '.') || calculator.hasError) {
     calculator.current = ''
   }
 
@@ -82,6 +82,12 @@ function operationHandler(operation) {
     case CLEAR:
       clearOperation()
       break
+    case ADD_SUBTRACT:
+      toggleNegativeCurrentNum()
+      break
+    case PERCENT:
+      percentOperation()
+      break
   }
 }
 
@@ -94,6 +100,40 @@ function commonOperation() {
   if (calculator.prev !== '0' && calculator.current !== '0' && calculator.symbol) {
     calculate(calculator.prev, calculator.current)
   }
+}
+
+function toggleNegativeCurrentNum() {
+  if (calculator.hasError) {
+    return
+  }
+
+  if (!calculator.current.startsWith('-')) {
+    calculator.current = '-' + calculator.current
+  } else {
+    calculator.current = calculator.current.substring(1)
+  }
+
+  renderDisplay(calculator.current)
+}
+
+function percentOperation() {
+  if (!calculator.current) {
+    return
+  }
+
+  let result = null
+
+  if (calculator.prev !== '0') {
+    calculator.symbol = '*'
+    result = calculate(calculator.prev, calculator.current, true)
+  } else {
+    result = calculator.current
+  }
+
+  calculator.current = (result / 100).toString()
+
+  renderDisplay(calculator.current)
+
 }
 
 function equalOperation() {
@@ -157,7 +197,7 @@ function operationSymbol(operation) {
   }
 }
 
-function calculate(num1, num2) {
+function calculate(num1, num2, returnResult = false) {
   const {symbol} = calculator
 
   const result = eval(num1 + symbol + num2)
@@ -166,6 +206,11 @@ function calculate(num1, num2) {
     renderDisplay('Division By Zero')
     return
   }
+  
+  if (returnResult) {
+    return result
+  }
+
   calculator.current = result.toString()
   renderDisplay(calculator.current)
 }
